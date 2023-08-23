@@ -1,114 +1,102 @@
+import React, {useEffect, useState} from 'react';
+
 import 'devextreme/dist/css/dx.common.css';
 import './themes/generated/theme.base.css';
 import './themes/generated/theme.additional.css';
-import React from 'react';
-//import { HashRouter as Router } from 'react-router-dom';
 import './dx-styles.scss';
-//import LoadPanel from 'devextreme-react/load-panel';
-//import { NavigationProvider } from './contexts/navigation';
-//import { AuthProvider, useAuth } from './contexts/auth';
-//import { useScreenSizeClass } from './utils/media-query';
-//import Content from './Content';
-//import UnauthenticatedContent from './UnauthenticatedContent';
-
-import axios from "axios";
-
-// <ColumnFixing enable={true} />
 
 import {
-  DataGrid,
-  Column,
-  Editing,
-  FilterRow,
- // RequiredRule,
-  SearchPanel
- // Toolbar
-
+    DataGrid,
+    Column,
+    Editing,
+    FilterRow,
+    SearchPanel,
+    Paging,
+    Pager,
+    GroupPanel,
+    Grouping,
+    Export,
+    Summary,
+    TotalItem,
 } from 'devextreme-react/data-grid';
-//import { Button } from 'devextreme-react/button'
 
-import {nv1000} from './nv1000'; 
+//Add API extensions here
+import { fetchVoters } from './api/voterService';
 
-   /*CountyID, StateID, Status, County, Precinct, First,
-   Last, Middle, Phone, email, BirthDate, RegDate, Party,
-   StreetNo, StreetName, Address1, City, State, Zip, 
-   RegisteredDays, Age, TotalVotes, Generals, Primaries, Polls, 
-   Absentee, Early, Provisional, LikelytoVote, Score
-
-              <Column dataField="Position"></Column>
-              <Column
-                  dataField="BirthDate"
-                  dataType="date"
-                  width={100}>
-              </Column>
-   */
+const columns = [
+    "CountyID",
+    "StateID",
+    "Status",
+    "County",
+    "Precinct",
+    "First",
+    "Last",
+    "Middle",
+    "Phone",
+    "email",
+    "BirthDate",
+    "RegDate",
+    "Party",
+    // ... add other columns here
+];
 
 function App() {
-/*
-  const baseURL = "http://localhost:3001/get/voters";
-  const [post, setPost] = React.useState(null);
+    const [voters, setVoters] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  React.useEffect(() => {
-    /*
-    axios.get(baseURL).then((response) => {
-      setPost(response.data);
-    });
-    
-  }, []);
+    useEffect(() => {
+        fetchVoters()
+            .then((data) => {
+                setVoters(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                setError(error);
+                setLoading(false);
+                console.error("An error occurred while fetching data:", error);
+            });
+    }, []);
 
-  if (!post) return null;
-  */
+    //Loading conditions
+    if (loading) return <div>Loading...</div>;
 
-  return (
-      <div className="App">
-          <DataGrid 
-              columnAutoWidth={true}
-              dataSource={nv1000}
-              keyExpr="StateID" > 
-             {/* allowColumnReordering={true}  */}
-              {/* ... */}
-              <Column dataField="CountyID" sortOrder="asc"> </Column>
-              <Column dataField="StateID" > </Column>
-              <Column dataField="Status" > </Column>
-              <Column dataField="County"  > </Column>
-              <Column dataField="Precinct"  > </Column>
-              <Column dataField="First"  > </Column>
-              <Column dataField="Last"  > </Column>
-              <Column dataField="Middle"  > </Column>
-              <Column dataField="Phone"  > </Column>
-              <Column dataField="email"  > </Column>
-              <Column dataField="BirthDate"  > </Column>
-              <Column dataField="RegDate"  > </Column>
-              <Column dataField="Party"  > </Column>
-              <Column dataField="StreetNo"  > </Column>
-              <Column dataField="StreetName"  > </Column>
-              <Column dataField="Address1"  > </Column>
-              <Column dataField="City"  > </Column>
-              <Column dataField="State"  > </Column>
-              <Column dataField="RegisteredDays"  > </Column>
-              <Column dataField="Age"  > </Column>
-              <Column dataField="TotalVotes"  > </Column>
-              <Column dataField="Generals"  > </Column>
-              <Column dataField="Primaries"  > </Column>
-              <Column dataField="Polls"  > </Column>
-              <Column dataField="Absentee"  > </Column>
-              <Column dataField="Early"  > </Column>
-              <Column dataField="Provisional"  > </Column>
-              <Column dataField="LikelytoVote"  > </Column>
-              <Column dataField="Score"  > </Column>
-            
-              <FilterRow visible={true} />
-              <SearchPanel visible={true} />
-              <Editing
+    //Error conditions
+    if (error) return <div>An error occurred while fetching data. Please try again later.</div>;
+
+    return (
+        <div className="App">
+            <DataGrid
+                allowSorting={true}
+                allowColumnResizing={true}
+                allowColumnReordering={true}
+                columnAutoWidth={true}
+                dataSource={voters}
+                keyExpr="StateID"
+                sortMode="multiple"
+            >
+                <Export enabled={true} />
+                <Grouping autoExpandAll={false} />
+                <GroupPanel visible={true} />
+                <Paging defaultPageSize={10} />
+                <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20]} />
+                {columns.map((field) => (
+                    <Column dataField={field} key={field} alignment="left" />
+                ))}
+                <FilterRow visible={true} />
+                <SearchPanel visible={true} />
+                <Editing
                     mode="popup"
                     allowUpdating={true}
                     allowDeleting={true}
                     allowAdding={true}
                 />
-
-          </DataGrid>
-      </div>
-  );
+                <Summary>
+                    <TotalItem column="TotalVotes" summaryType="sum" />
+                </Summary>
+            </DataGrid>
+        </div>
+    );
 }
 
 export default App;
