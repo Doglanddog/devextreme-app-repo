@@ -22,6 +22,8 @@ import {
 
 //Add API extensions here
 import { fetchVoters } from './api/voterService';
+import {Header} from "./components";
+import {Navigate} from "react-router-dom";
 
 const columns = [
     "CountyID",
@@ -66,6 +68,8 @@ function App() {
 
     return (
         <div className="App">
+            <input/>
+
             <DataGrid
                 allowSorting={true}
                 allowColumnResizing={true}
@@ -75,6 +79,7 @@ function App() {
                 keyExpr="StateID"
                 sortMode="multiple"
             >
+
                 <Export enabled={true} />
                 <Grouping autoExpandAll={false} />
                 <GroupPanel visible={true} />
