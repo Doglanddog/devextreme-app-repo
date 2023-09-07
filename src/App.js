@@ -9,6 +9,7 @@ import {
     DataGrid,
     Column,
     Editing,
+    HeaderFilter,
     FilterRow,
     SearchPanel,
     Paging,
@@ -18,6 +19,7 @@ import {
     Export,
     Summary,
     TotalItem,
+    Scrolling,
 } from 'devextreme-react/data-grid';
 
 //Add API extensions here
@@ -25,22 +27,6 @@ import { fetchVoters } from './api/voterService';
 import {Header} from "./components";
 import {Navigate} from "react-router-dom";
 
-const columns = [
-    "CountyID",
-    "StateID",
-    "Status",
-    "County",
-    "Precinct",
-    "First",
-    "Last",
-    "Middle",
-    "Phone",
-    "email",
-    "BirthDate",
-    "RegDate",
-    "Party",
-    // ... add other columns here
-];
 
 function App() {
     const [voters, setVoters] = useState(null);
@@ -67,10 +53,11 @@ function App() {
     if (error) return <div>An error occurred while fetching data. Please try again later.</div>;
 
     return (
-        <div className="App">
-            <input/>
+        <div style={{backgroundColor: "ltblue"}}>
+
 
             <DataGrid
+            
                 allowSorting={true}
                 allowColumnResizing={true}
                 allowColumnReordering={true}
@@ -79,15 +66,44 @@ function App() {
                 keyExpr="StateID"
                 sortMode="multiple"
             >
-
+                <Scrolling mode="virtual" />
                 <Export enabled={true} />
                 <Grouping autoExpandAll={false} />
                 <GroupPanel visible={true} />
-                <Paging defaultPageSize={10} />
-                <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20]} />
-                {columns.map((field) => (
-                    <Column dataField={field} key={field} alignment="left" />
-                ))}
+                <Paging defaultPageSize={10} /> 
+               {/*} {*/}
+                
+                <Column dataField="CountyID" > </Column>
+                <Column dataField="StateID" sortOrder="asc"> </Column>
+                <Column dataField="Status" > </Column>
+                <Column dataField="County" > allowHeaderFiltering={true} </Column>
+                <Column dataField="Precinct"  > </Column>
+                <Column dataField="First"  > </Column>
+                <Column dataField="Last"  > </Column>
+                <Column dataField="Middle"  > </Column>
+                <Column dataField="Phone"  > </Column>
+                <Column dataField="email"  > </Column>
+                <Column dataField="BirthDate"  > </Column>
+                <Column dataField="RegDate"  > </Column>
+                <Column dataField="Party"  > </Column>
+                <Column dataField="StreetNo"  > </Column>
+                <Column dataField="StreetName"  > </Column>
+                <Column dataField="Address1"  > </Column>
+                <Column dataField="City"  > </Column>
+                <Column dataField="State"  > </Column>
+                <Column dataField="RegisteredDays"  > </Column>
+                <Column dataField="Age"  > </Column>
+                <Column dataField="TotalVotes"  > </Column>
+                <Column dataField="Generals"  > </Column>
+                <Column dataField="Primaries"  > </Column>
+                <Column dataField="Polls"  > </Column>
+                <Column dataField="Absentee"  > </Column>
+                <Column dataField="Early"  > </Column>
+                <Column dataField="Provisional"  > </Column>
+                <Column dataField="LikelytoVote"  > </Column>
+                <Column dataField="Score"  > </Column>
+
+                <HeaderFilter visible={true} />
                 <FilterRow visible={true} />
                 <SearchPanel visible={true} />
                 <Editing
@@ -105,4 +121,5 @@ function App() {
 }
 
 export default App;
+
 
